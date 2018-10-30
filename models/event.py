@@ -1,8 +1,8 @@
-from enum import Enum, auto
+from enum import Enum
 
 class EngineDirection(Enum):
-  FORWARD = auto()
-  BACKWARD = auto()
+  FORWARD = 1
+  BACKWARD = 2
 
 class InputEvent:
   pass
@@ -35,8 +35,8 @@ class EngineInput(OutputEvent):
     return -1. < magnitude < 1. and direction in EngineDirection
 
   def __init__(self, left_engine_input, right_engine_input):
-    assert EngineInput.is_valid_engine_input(left_engine_input), "%s is not a valid input for left engine", left_engine_input
-    assert EngineInput.is_valid_engine_input(right_engine_input), "%s is not a valid input for right engine", right_engine_input
+    assert EngineInput.is_valid_engine_input(left_engine_input), "{} is not a valid input for left engine".format(left_engine_input)
+    assert EngineInput.is_valid_engine_input(right_engine_input), "{} is not a valid input for right engine".format(right_engine_input)
 
     self.left_engine_input = left_engine_input
     self.right_engine_input = right_engine_input

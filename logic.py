@@ -69,7 +69,7 @@ def handle_event(event: InputEvent) -> OutputEvent:
 
   elif _is_direction_event(event):
     (left_engine, right_engine) = direction_event_to_engine_input(event)
-    return direction_command
+    return left_engine, right_engine
 
   else:
     raise ValueError("Could not understand event type " +
