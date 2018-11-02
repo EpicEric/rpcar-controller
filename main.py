@@ -1,13 +1,12 @@
-from signal import pause
-from .event import fetch_event
-from .logic import handle_event
+#!/usr/bin/env python3
+from setup import setup
+from listen import listen
 
-def listen_to_events_loop():
-  while True:
-    event = fetch_event()
-    command_to_take = handle_event(event)
-    dispatch_event(command_to_take)
 
-if __name__ == '__main__':
-    listen_to_events_loop()
+if __name__ == "__main__":
+    setup()
+    listen()
 
+else:
+    print("You should not use this file as a lib")
+    exit()
