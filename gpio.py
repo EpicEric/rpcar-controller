@@ -1,24 +1,36 @@
-import RPi.GPIO as GPIO
+from gpiozero import LED, PWMLED
+import enum
 
-import gpio_mapping
+
+class GPIOMapping(enum.Enum):
+    LEFT_DIRECTION = 25
+    LEFT_INTENSITY = 12
+    RIGHT_DIRECTION = 24
+    RIGHT_INTENSITY = 13
 
 
-class MotorInterface:
+def gpios():
+    left_direction = LED(GPIOMapping.LEFT_DIRECTION.value)
+    right_direction = LED(GPIOMapping.RIGHT_DIRECTION.value)
+    left_intensity = PWMLED(GPIOMapping.LEFT_INTENSITY.value)
+    right_intensity = PWMLED(GPIOMapping.RIGHT_INTENSITY.value)
+    
 
-    @staticmethod
-    def __send_to_gpio(gpio_number, value):
-        GPIO.output(gpio_number, value)
-
-    @staticmethod
+    def __send_to_gpio(gpio, value):
+        if value:    
+            gpio.on()
+        else:
+            gpio.off()
+    
     def __send_to_pwm(pwm, value):
-        pwm.stop()
-        pwm.start(value)
-
-    @staticmethod
+        pwm.value = value
+    
     def to_gpio_signal(engine_event):
         left = engine_event.left_engine_input
         right = engine_event.right_engine_input
-        MotorInterface.__send_to_gpio(gpio_mapping.GPIOMapping.LEFT_DIRECTION.value, left[1].value)
-        MotorInterface.__send_to_pwm(gpio_mapping.PWM_LEFT, left[0] * 100)
-        MotorInterface.__send_to_gpio(gpio_mapping.GPIOMapping.RIGHT_DIRECTION.value, right[1].value)
-        MotorInterface.__send_to_pwm(gpio_mapping.PWM_RIGHT, right[0] * 100)
+        __send_to_gpio(left_direction, left[1].value)
+        __send_to_pwm(left_intensity, left[0])
+        __send_to_gpio(right_direction, right[1].value)
+        __send_to_pwm(right_intensity, right[0])
+
+    return to_gpio_signal
