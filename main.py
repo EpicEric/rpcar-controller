@@ -6,5 +6,4 @@ if __name__ == "__main__":
     listen()
 
 else:
-    print("You should not use this file as a lib")
-    exit()
+    raise ImportError("You should not use this file as a lib")
