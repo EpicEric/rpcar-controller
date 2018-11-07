@@ -30,16 +30,33 @@ def to_engine_inputs(left, right, intensity):
 
     return left_input, right_input
 
+def relative_intensity_of_auxiliary_engine(x, y, intensity):
+    '''
+    Given a point (x, y) and their hypotenuse, return what strength to apply to
+    the auxiliary motor.
+    '''
+
+    try:
+        x_relative = abs(x / intensity)
+    except ZeroDivisionError:
+        return 0
+
+    # aux = 1 - 2 * x_relative                # Naive solution, not symmetrical
+    # aux = (4 * acos(x_relative) - pi) / pi  # Linear movement, abrupt change on edges
+    aux = -cos(2 * acos(x_relative))          # Natural movement
+    return aux
+
 
 def direction_event_to_engine_input(event: DirectionEvent):
+    '''
+    Get a position in a circle and transform into left/right engine powers.
+    '''
+
     (x, y) = event.get_coordinates()
     intensity = hypot(x, y)
-    x_relative = x / intensity if intensity > 0 else 0
 
     l = 1
-    # r = 1 - 2 * abs(x_relative)  # Naive solution, no full range on movement
-    # r = (4 * acos(abs(x_relative)) - pi) / pi  # Linear movement, abrupt change on edges
-    r = -cos(2 * acos(abs(x_relative)))  # Natural movement
+    r = relative_intensity_of_auxiliary_engine(x, y, intensity)
     assert abs(r) <= 1
 
     if is_on_left_half(x, y) ^ is_on_bottom_half(x, y):
