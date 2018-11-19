@@ -16,21 +16,24 @@ def gpios():
     right_intensity = PWMLED(GPIOMapping.RIGHT_INTENSITY.value)
     
 
-    def __send_to_gpio(gpio, value):
-        if value:    
+    def __send_to_gpio(gpio, direction):
+        if direction.value:
             gpio.on()
         else:
             gpio.off()
     
-    def __send_to_pwm(pwm, value):
-        pwm.value = value
+    def __send_to_pwm(pwm, direction, value):
+        if direction.value:
+            pwm.value = 1.0 - value
+        else:
+            pwm.value = value
     
     def to_gpio_signal(engine_event):
         left = engine_event.left_engine_input
         right = engine_event.right_engine_input
-        __send_to_gpio(left_direction, left[1].value)
-        __send_to_pwm(left_intensity, left[0])
-        __send_to_gpio(right_direction, right[1].value)
-        __send_to_pwm(right_intensity, right[0])
+        __send_to_gpio(left_direction, left[1])
+        __send_to_pwm(left_intensity, left[1], left[0])
+        __send_to_gpio(right_direction, right[1])
+        __send_to_pwm(right_intensity, right[1], right[0])
 
     return to_gpio_signal
