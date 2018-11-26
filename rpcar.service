@@ -1,0 +1,14 @@
+# Copy this file to /lib/systemd/system/rpcar.service
+[Unit]
+Description=Raspberry Pi car
+After=multi-user.target
+
+[Service]
+Type=idle
+Group=pi
+User=pi
+ExecStart=/usr/bin/stdbuf -oL /usr/bin/python3 /home/pi/pcs3858-embedded-systems-controller/main.py > /tmp/rpcar.log 2>&1
+
+[Install]
+WantedBy=multi-user.target
+
